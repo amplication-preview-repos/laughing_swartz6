@@ -1,0 +1,70 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Order {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  time      DateTime?
+  active    Boolean?
+  uid       String?
+  driver    String?
+  ride      String?
+  agency    Agency?   @relation(fields: [agencyId], references: [id])
+  agencyId  String?   @db.ObjectId
+}
+
+model Line {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  fromLocation String?
+  toLocation   String?
+  rides        Json?
+}
+
+model Agency {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  password    String?
+  name        String?
+  numberField Int?
+  drivers     String?
+  orders      Order[]
+}
+
+model User {
+  id             String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  firstName      String?
+  lastName       String?
+  username       String            @unique
+  email          String?           @unique
+  password       String
+  roles          Json
+  displayName    String?
+  phoneNumber    String?
+  role           String?
+  lastLocation   String?
+  ordersHistory  String?
+  photoUrl       String?
+  userRole       EnumUserUserRole?
+  roleType       EnumUserRoleType?
+  latestLocation String?
+}
+
+enum EnumUserUserRole {
+  Option1
+}
+
+enum EnumUserRoleType {
+  Option1
+}
